@@ -208,4 +208,7 @@ with tf.Session() as sess:
             print("Episode [%7d]  Total Steps [%7d]  Temp [%7.3f]  Mean [%7.3f]  Last 10 %s"
                   % (i, total_steps, e, np.mean(rList[-10:]), formatted_list))
     saver.save(sess,path+'/model-'+str(i)+'.ckpt')
+    with open("rlist.log", "w") as fd:
+        fd.write("%s" % rList)
+    print("Saved Model")
 print("Percent of succesful episodes: " + str(sum(rList)/num_episodes) + "%")
