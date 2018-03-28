@@ -10,6 +10,8 @@ import os
 from m2mlearning.games.DisplayState import DisplayState
 from m2mlearning.games.awjuliani.GridWorld import GridWorld
 
+DISPLAY = False
+
 # Load the game environment
 # Feel free to adjust the size of the gridworld. Making it smaller provides an easier task for our DQN agent, while making the world larger increases the challenge.
 
@@ -154,7 +156,8 @@ with tf.Session() as sess:
         rAll = 0
         j = 0
         #The Q-Network
-        while j < max_epLength: #If the agent takes longer than 200 moves to reach either of the blocks, end the trial.
+        ###while j < max_epLength: #If the agent takes longer than 200 moves to reach either of the blocks, end the trial.
+        while True: # Run until the game ends
             j+=1
             #Choose an action by greedily (with e chance of random action) from the Q-network
             if np.random.rand(1) < e or total_steps < pre_train_steps:
@@ -162,8 +165,9 @@ with tf.Session() as sess:
             else:
                 a = sess.run(mainQN.predict,feed_dict={mainQN.scalarInput:[s]})[0]
             s1,r,d,info = env.step(a)
-            #if i % 10 == 0:
-            #    ds.render(s1)
+            if DISPLAY and i % 500 == 0:
+                ds.render(s1)
+                print("[%d] rAll [%s]" % (j, rAll))
             s1 = processState(s1)
             total_steps += 1
             episodeBuffer.add(np.reshape(np.array([s,a,r,s1,d]),[1,5])) #Save the experience to our episode buffer.
