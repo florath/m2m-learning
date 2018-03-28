@@ -69,7 +69,7 @@ class GridWorldFire(GridWorldObject):
         return 0
 
     def get_reward(self):
-        return 0, self.__deadly
+        return -25, self.__deadly
 
 
 class GridWorldTreasure(GridWorldObject):
