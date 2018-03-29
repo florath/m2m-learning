@@ -114,8 +114,8 @@ class GridWorld(BaseGame):
         self.__fire_cnt = fires
         # Is there a penalty for out-off-board movements?
         self.__penalty_for_oob = penalty_for_oob
-        self.__penalty_step = -0.025
-        self.__penalty_invalid_move = -1
+        self.__penalty_step = 0.0 # -0.025
+        self.__penalty_invalid_move = 0.0 # -1
         # Be sure to be able to place all the elements and have some
         # spare places. (The one is added because of the hero.)
         assert self.__board_size[0] * self.__board_size[1] // 2 \
