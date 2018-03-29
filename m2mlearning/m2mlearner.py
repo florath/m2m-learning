@@ -168,7 +168,9 @@ with tf.Session() as sess:
         #The Q-Network
         ###while j < max_epLength: #If the agent takes longer than 200 moves to reach either of the blocks, end the trial.
         ### while True: # Run until the game ends --- this could take forever.
-        while rAll < 1000 and steps_in_episode < 50000: # Run until the score is 1000 ; additional abort: if the net gets only penalty
+
+        # -500: wrong direction!
+        while rAll < 1000 and rAll > -500 and steps_in_episode < 50000: # Run until the score is 1000 ; additional abort: if the net gets only penalty
             j+=1
             #Choose an action by greedily (with e chance of random action) from the Q-network
             if np.random.rand(1) < e or total_steps < pre_train_steps:
