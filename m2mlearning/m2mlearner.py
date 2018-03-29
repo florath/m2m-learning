@@ -102,14 +102,19 @@ update_freq = 4 #How often to perform a training step.
 y = .99 #Discount factor on the target Q-values
 startE = 1 #Starting chance of random action
 endE = 0.1 #Final chance of random action
-annealing_steps = 10000. #How many steps of training to reduce startE to endE.
+
+## annealing_steps = 10000. #How many steps of training to reduce startE to endE.
+annealing_steps = 500000 # Slower cooling - should be around episode 3000
+
 num_episodes = 10000 #How many episodes of game environment to train network with.
 pre_train_steps = 10000 #How many steps of random actions before training begins.
-max_epLength = 50 #The max allowed length of our episode.
+#max_epLength = 50 #The max allowed length of our episode.
 load_model = False #Whether to load a saved model.
 path = "./dqn" #The path to save our model to.
 h_size = 512 #The size of the final convolutional layer before splitting it into Advantage and Value streams.
-tau = 0.001 #Rate to update target network toward primary network
+
+## tau = 0.001 #Rate to update target network toward primary network
+tau = 0.0001 # Be slower - and hopefulle get better results
 
 
 tf.reset_default_graph()
