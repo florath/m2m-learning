@@ -101,10 +101,11 @@ batch_size = 32 #How many experiences to use for each training step.
 update_freq = 4 #How often to perform a training step.
 y = .99 #Discount factor on the target Q-values
 startE = 1 #Starting chance of random action
-endE = 0.1 #Final chance of random action
+# endE = 0.1 #Final chance of random action
+endE = 0.00000001
 
 ## annealing_steps = 10000. #How many steps of training to reduce startE to endE.
-annealing_steps = 500000 # Slower cooling - should be around episode 3000
+annealing_steps = 100000 # Slower cooling - should be around episode 3000
 
 num_episodes = 10000 #How many episodes of game environment to train network with.
 pre_train_steps = 10000 #How many steps of random actions before training begins.
@@ -115,7 +116,6 @@ h_size = 512 #The size of the final convolutional layer before splitting it into
 
 ## tau = 0.001 #Rate to update target network toward primary network
 tau = 0.0001 # Be slower - and hopefulle get better results
-
 
 tf.reset_default_graph()
 mainQN = Qnetwork(h_size)
