@@ -214,8 +214,8 @@ with tf.Session() as sess:
         if len(rList) % 10 == 0:
             formatted_list = []
             for item in rList[-10:]:
-                formatted_list.append("%7.3f" % item)
-            print("Episode [%7d]  Total Steps [%7d]  Temp [%7.3f]  Mean [%7.3f]  Last 10 %s"
+                formatted_list.append("%11.3f" % item)
+            print("Episode [%7d]  Total Steps [%7d]  Temp [%7.3f]  Mean [%11.3f]  Last 10 %s"
                   % (i, total_steps, e, np.mean(rList[-10:]), formatted_list))
     saver.save(sess,path+'/model-'+str(i)+'.ckpt')
     with open("rlist.log", "w") as fd:
