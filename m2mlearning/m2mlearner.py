@@ -211,7 +211,8 @@ with tf.Session() as sess:
             with open("rlist.log", "w") as fd:
                 fd.write("%s" % rList)
             print("Saved Model")
-        if len(rList) % 10 == 0:
+        if True: ## Do this every time.  This adds some clutter at the beginnig but gives faster response time when the network runs for some time.
+            ### if len(rList) % 10 == 0:
             formatted_list = []
             for item in rList[-10:]:
                 formatted_list.append("%11.3f" % item)
