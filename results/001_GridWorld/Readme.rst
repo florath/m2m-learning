@@ -11,4 +11,9 @@ Run
 Planned
 =======
 
-Decrease endE; either to something VERY low like 0.00000001 or even 0.
+* Decrease endE; either to something VERY low like 0.00000001 or even 0.
+* Add an additional reward, if the end of game is reached (e.g. another 5000 points)
+* Add penalties for
+  - every non-sensible step (e.g. go up at the top of the game-board)
+  - every step: this hopefully lowers the circles used by the hero.
+

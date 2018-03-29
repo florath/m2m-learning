@@ -6,9 +6,13 @@ import tensorflow.contrib.slim as slim
 import matplotlib.pyplot as plt
 import scipy.misc
 import os
+import logging
 
 from m2mlearning.games.DisplayState import DisplayState
 from m2mlearning.games.awjuliani.GridWorld import GridWorld
+
+logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 DISPLAY = False
 
@@ -102,7 +106,7 @@ update_freq = 4 #How often to perform a training step.
 y = .99 #Discount factor on the target Q-values
 startE = 1 #Starting chance of random action
 # endE = 0.1 #Final chance of random action
-endE = 0.00000001
+endE = 0.000000001
 
 ## annealing_steps = 10000. #How many steps of training to reduce startE to endE.
 annealing_steps = 100000 # Slower cooling - should be around episode 3000
@@ -159,11 +163,12 @@ with tf.Session() as sess:
         s = processState(s)
         d = False
         rAll = 0
+        steps_in_episode = 0
         j = 0
         #The Q-Network
         ###while j < max_epLength: #If the agent takes longer than 200 moves to reach either of the blocks, end the trial.
         ### while True: # Run until the game ends --- this could take forever.
-        while rAll < 10000: # Run until the score is 10000
+        while rAll < 1000: # Run until the score is 1000
             j+=1
             #Choose an action by greedily (with e chance of random action) from the Q-network
             if np.random.rand(1) < e or total_steps < pre_train_steps:
@@ -176,11 +181,14 @@ with tf.Session() as sess:
                 print("[%d] rAll [%s]" % (j, rAll))
             s1 = processState(s1)
             total_steps += 1
+            steps_in_episode += 1
             episodeBuffer.add(np.reshape(np.array([s,a,r,s1,d]),[1,5])) #Save the experience to our episode buffer.
             
             if total_steps > pre_train_steps:
                 if e > endE:
                     e -= stepDrop
+                    if e < endE:
+                        e = endE
                 
                 if total_steps % (update_freq) == 0:
                     trainBatch = myBuffer.sample(batch_size) #Get a random batch of experiences.
@@ -208,16 +216,17 @@ with tf.Session() as sess:
         #Periodically save the model. 
         if i % 1000 == 0:
             saver.save(sess,path+'/model-'+str(i)+'.ckpt')
+            logger.info("Saved Model")
+        if i % 10 == 0:
             with open("rlist.log", "w") as fd:
                 fd.write("%s" % rList)
-            print("Saved Model")
         if True: ## Do this every time.  This adds some clutter at the beginnig but gives faster response time when the network runs for some time.
             ### if len(rList) % 10 == 0:
-            formatted_list = []
-            for item in rList[-10:]:
-                formatted_list.append("%11.3f" % item)
-            print("Episode [%7d]  Total Steps [%7d]  Temp [%7.3f]  Mean [%11.3f]  Last 10 %s"
-                  % (i, total_steps, e, np.mean(rList[-10:]), formatted_list))
+            #formatted_list = []
+            #for item in rList[-10:]:
+            #    formatted_list.append("%11.3f" % item)
+            logger.debug("Episode [%7d]  Total Steps [%8d]  Temp [%7.5f]  Steps [%7d]  Score [%11.3f]"
+                         % (i, total_steps, e, steps_in_episode, rAll))
     saver.save(sess,path+'/model-'+str(i)+'.ckpt')
     with open("rlist.log", "w") as fd:
         fd.write("%s" % rList)

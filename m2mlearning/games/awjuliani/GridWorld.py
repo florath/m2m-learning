@@ -104,7 +104,8 @@ class GridWorld(BaseGame):
     """
 
     def __init__(self, fire_is_deadly=True, penalty_for_oob=True,
-                 board_size = [7, 7], treasures=4, fires=2):
+                 # Everything else than fires=1 might lead to an unsolvabale problem when deadly is enabled.
+                 board_size = [7, 7], treasures=4, fires=1):
         self.__board_size = board_size
         # Need three colors - many information is coded into colors
         self.__view_size = copy.deepcopy(self.__board_size)
@@ -113,7 +114,8 @@ class GridWorld(BaseGame):
         self.__fire_cnt = fires
         # Is there a penalty for out-off-board movements?
         self.__penalty_for_oob = penalty_for_oob
-        self.__penalty = -0.001
+        self.__penalty_step = -0.025
+        self.__penalty_invalid_move = -1
         # Be sure to be able to place all the elements and have some
         # spare places. (The one is added because of the hero.)
         assert self.__board_size[0] * self.__board_size[1] // 2 \
@@ -192,15 +194,16 @@ class GridWorld(BaseGame):
         def check_coordinates(axis):
             if new_hero_coordinates[axis] < 0:
                 new_hero_coordinates[axis] = 0
-                return self.__penalty
+                return self.__penalty_invalid_move
         
             if new_hero_coordinates[axis] >= self.__board_size[axis]:
                 new_hero_coordinates[axis] = self.__board_size[axis] - 1
-                return self.__penalty
+                return self.__penalty_invalid_move
 
             return 0.0
 
-        penalty = check_coordinates(0)
+        penalty = self.__penalty_step
+        penalty += check_coordinates(0)
         penalty += check_coordinates(1)
 
         return new_hero_coordinates, penalty
